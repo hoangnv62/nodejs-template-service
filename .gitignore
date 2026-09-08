@@ -1,0 +1,14 @@
+node_modules/
+.env
+.env.*
+!.env.example
+
+# Cấu hình cá nhân Claude Code
+.claude/settings.local.json
+.claude/agent-memory-local/
+CLAUDE.local.md
+
+# Editor
+.idea/
+.vscode/
+.DS_Store

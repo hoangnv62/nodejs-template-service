@@ -1,0 +1,4 @@
+# File bị gitignore nhưng cần copy sang worktree mới
+.env
+.claude/settings.local.json
+CLAUDE.local.md
