@@ -1,4 +1,4 @@
-# Checklist bảo mật — stock-view-service
+# Checklist bảo mật — nodejs-template-service
 
 ## SQL (src/repositories/)
 

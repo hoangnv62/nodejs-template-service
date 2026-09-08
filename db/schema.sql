@@ -1,0 +1,32 @@
+-- ============================================================
+-- CẤU TRÚC DATABASE — dán dump DDL vào đây
+-- ============================================================
+--
+-- File này là NGUỒN SỰ THẬT về schema. Claude đọc nó khi cần biết
+-- chính xác cột, kiểu, constraint, index.
+--
+-- CÁCH LẤY DUMP
+--
+--   pg_dump --schema-only --no-owner --no-privileges "$DB_URL" > db/schema.sql
+--
+-- (pg_dump chưa được cài trên máy này — dùng GUI cũng được:
+--  DataGrip: chuột phải schema > SQL Scripts > Generate DDL > Copy
+--  pgAdmin:  chuột phải database > Backup > chọn "Only schema"
+--  DBeaver:  chuột phải schema > Generate SQL > DDL)
+--
+-- NÊN CÓ
+--   CREATE TABLE, PRIMARY KEY, FOREIGN KEY, UNIQUE, NOT NULL, DEFAULT
+--   CREATE INDEX  ← quan trọng, thiếu nó Claude viết query không dùng được index
+--   COMMENT ON    ← nếu có, giải thích cột nào mã hoá gì
+--
+-- KHÔNG CẦN
+--   dữ liệu (INSERT), role/grant, extension không liên quan,
+--   SET/SELECT pg_catalog ở đầu file dump
+--
+-- SAU KHI DÁN
+--   Nói tôi một câu, tôi sẽ cập nhật lại .claude/rules/db-schema.md
+--   cho khớp — phần đó là bản tóm tắt để đọc nhanh, file này là chi tiết đầy đủ.
+--
+-- ============================================================
+
+-- <<< DÁN DUMP VÀO DƯỚI DÒNG NÀY >>>

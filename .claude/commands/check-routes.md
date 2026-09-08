@@ -10,7 +10,7 @@ description: Liệt kê toàn bộ route đang mount và soát các thiếu sót
 
 !`grep -n "app.use\|app.get" app.js`
 
-Dựng bảng: method | full path (kèm prefix `/stock-view/api`) | controller | có `authenticate`? | có `validate`?
+Dựng bảng: method | full path (kèm prefix `/nodejs-template/api`) | controller | có `authenticate`? | có `validate`?
 
 Sau đó chỉ ra:
 - handler async nào thiếu `asyncHandler`

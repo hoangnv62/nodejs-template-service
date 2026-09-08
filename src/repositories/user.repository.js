@@ -32,27 +32,23 @@ export const findByEmail = async (email) => {
 export const insert = async ({email, fullName, password, role, status}) => {
     const sql = `
         INSERT INTO users(email, fullName, password, role, status)
-        VALUES ($1, $2, $3, $4, $5)
+        VALUES ($(email), $(fullName), $(password), $(role), $(status))
+        RETURNING id
     `
     const insertedUser = await db.one(sql, {email, fullName, password, role, status});
     return insertedUser.id;
 }
 
 export const update = async ({id, email, fullName, role, status}) => {
-    let affected = 0;
-    try {
-        const sql = `
-            UPDATE users
-            SET email    = $(email),
-                fullName = $(fullName),
-                role     = $(role),
-                status   = $(status),
-                WHERE u.id = $(id)
-        `
-        affected = await db.result(sql, {id, email, fullName, role, status}, r => r.rowCount);
-    } catch (error) {
-        throw error;
-    }
+    const sql = `
+        UPDATE users
+        SET email    = $(email),
+            fullName = $(fullName),
+            role     = $(role),
+            status   = $(status)
+        WHERE id = $(id)
+    `
+    const affected = await db.result(sql, {id, email, fullName, role, status}, r => r.rowCount);
     if (affected === 0) throw new NotFoundError("User not found");
     return affected;
 }

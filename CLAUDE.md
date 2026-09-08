@@ -1,14 +1,16 @@
-# stock-view-service
+# nodejs-template-service
 
-Express 5 REST API cho dữ liệu chứng khoán Việt Nam. Node.js ESM thuần, không TypeScript.
+Template service Express 5, Node.js ESM thuần, không TypeScript.
+Các endpoint hiện có (`stocks`, `authenticate`) là code mẫu minh hoạ kiến trúc.
 
 ## Commands
 
 - Dev (watch): `npm run dev`
 - Start: `npm start`
-- Test: chưa có test runner (`npm test` đang là placeholder)
+- Test: `npm test` (test runner built-in của Node, không cần dependency)
+- Test watch: `npm run test:watch` · Coverage: `npm run test:coverage`
 
-Server chạy port 3000, mọi route nằm dưới prefix `/stock-view/api`.
+Server chạy port 3000, mọi route nằm dưới prefix `/nodejs-template/api`.
 
 ## Stack
 
@@ -52,3 +54,24 @@ route → middleware (validate, authenticate) → controller → service → rep
 - Shape lỗi trả về client do `errorHandler` quyết định: `{ error, errorDescription }`
 - Message lỗi hướng tới người dùng viết bằng tiếng Việt, khớp với code hiện có
 - Biến môi trường chỉ đọc qua `env` trong `#config/env.js`, không `process.env` rải rác
+- **Cấu trúc DB: dump DDL đầy đủ ở `db/schema.sql`**, quy ước ở `.claude/rules/db-schema.md`.
+  Đọc `db/schema.sql` trước khi viết SQL — đừng suy ra cấu trúc bảng từ query có sẵn
+- Test nằm cạnh source: `foo.js` → `foo.test.js`. `node --test` tự tìm theo pattern `*.test.js`
+- Test không được phụ thuộc DB hay biến môi trường — inject fake `req`/`res`/`next` thay vì chạy server
+
+## Khi thiếu thông tin
+
+Ba nhóm dưới đây **đừng đoán — hỏi trước khi viết code**:
+
+1. **Schema** — bảng hoặc cột chưa có trong `db/schema.sql`. Đừng suy ra cấu trúc từ
+   query có sẵn, đừng tự đặt tên cột
+2. **Quyền truy cập** — endpoint là public, của riêng user (lọc theo `req.user.userId`),
+   hay chỉ admin (kiểm `role`)? Ba đáp án ra ba đoạn code khác nhau, đoán sai là làm lại
+3. **Việc chạm ra ngoài** — kết nối DB thật, gọi API bên thứ ba, ghi vào dữ liệu production
+
+Ngoài ba nhóm đó thì tự quyết và **nói rõ giả định đã dùng**, đừng chặn lại để hỏi.
+Mặc định nên chọn: có phân trang qua `paginated()`, query đọc lọc `AND status = 1`,
+response qua helper trong `#utils/response.utils.js`.
+
+Làm hết phần không phụ thuộc câu trả lời trước, rồi mới hỏi phần còn lại — đừng dừng
+cả task chỉ vì thiếu một chi tiết.

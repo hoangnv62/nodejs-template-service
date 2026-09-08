@@ -15,7 +15,7 @@ export const registerSchema = z.object({
 export const changePasswordSchema = z.object({
     currentPassword: z.string().min(6, 'Vui lòng nhập mật khẩu hiện tại'),
     newPassword: z.string().min(6, 'Mật khẩu mới phải có ít nhất 6 ký tự'),
-}).refine(data => data.currentPassword !== data.currentPassword, {
+}).refine(data => data.newPassword !== data.currentPassword, {
     message: "Mật khẩu mới phải khác mật khẩu hiện tại",
     path: ['newPassword'], //path quyết định lỗi gắn vào field nào. Có nó thì frontend hiện lỗi ngay dưới ô "mật khẩu mới"; bỏ đi thì lỗi thành lỗi cấp form, khó gắn vào input cụ thể.
 });

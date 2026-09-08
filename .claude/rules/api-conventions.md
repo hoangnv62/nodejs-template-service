@@ -43,7 +43,7 @@ export default router;
 
 - Mỗi handler async **phải** bọc `asyncHandler`, nếu không lỗi promise sẽ không tới `errorHandler`
 - `validate` đặt trước `asyncHandler`; `authenticate` đặt trước `validate`
-- Route path viết tương đối với prefix mount trong `app.js`, đừng lặp lại `/stock-view/api`
+- Route path viết tương đối với prefix mount trong `app.js`, đừng lặp lại `/nodejs-template/api`
 
 ## Validation
 

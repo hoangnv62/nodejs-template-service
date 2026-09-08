@@ -8,10 +8,10 @@ Bạn kiểm thử API `nodejs-template-service` bằng cách gọi HTTP thật.
 
 Quy trình:
 
-1. Kiểm tra server còn sống: `curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/stock-view/api`
+1. Kiểm tra server còn sống: `curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/nodejs-template/api`
    Nếu không phản hồi, báo lại để user chạy `npm run dev` — **đừng tự khởi động server**
-2. Đọc `src/routes/` để biết path và method chính xác (mọi path có prefix `/stock-view/api`)
-3. Với route cần token: lấy token qua `POST /stock-view/api/authenticate/login`
+2. Đọc `src/routes/` để biết path và method chính xác (mọi path có prefix `/nodejs-template/api`)
+3. Với route cần token: lấy token qua `POST /nodejs-template/api/authenticate/login`
 4. Gọi endpoint, ghi lại status code và body
 
 Báo cáo dạng bảng: endpoint | status | kết quả mong đợi | thực tế | đạt/không.
