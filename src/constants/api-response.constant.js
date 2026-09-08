@@ -3,6 +3,10 @@ export const apiResponseCode = {
         code: 200,
         error:'SUCCESS'
     },
+    CREATED: {
+        code: 201,
+        error: 'CREATED',
+    },
     INTERNAL_SERVER_ERROR: {
         code: 500,
         error: 'INTERNAL_SERVER_ERROR',
