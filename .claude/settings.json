@@ -39,6 +39,12 @@
             "type": "command",
             "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/validate-claude-config.sh",
             "args": []
+          },
+          {
+            "type": "command",
+            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/auto-review.sh",
+            "args": [],
+            "statusMessage": "Soát quy ước file vừa sửa..."
           }
         ]
       }

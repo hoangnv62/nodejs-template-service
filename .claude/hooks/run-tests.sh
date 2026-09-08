@@ -12,9 +12,10 @@
 set -uo pipefail
 cd "${CLAUDE_PROJECT_DIR:-.}" || exit 0
 
-# Không có thay đổi chưa commit trong src/ thì bỏ qua, tránh chạy test mỗi lượt hỏi đáp.
+# Không có thay đổi chưa commit trong src/ hoặc test/ thì bỏ qua, tránh chạy test
+# mỗi lượt hỏi đáp.
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-    if [ -z "$(git status --porcelain -- src package.json 2>/dev/null)" ]; then
+    if [ -z "$(git status --porcelain -- src test package.json 2>/dev/null)" ]; then
         exit 0
     fi
 fi
@@ -25,9 +26,9 @@ fail=$(printf '%s\n' "$out" | grep -E '^# fail ' | awk '{print $3}')
 : "${pass:=?}" "${fail:=?}"
 
 if [ "$fail" = "0" ]; then
-    echo "[hook] npm test: ${pass}/${pass} pass — thay đổi trong src/ không làm vỡ test nào."
+    echo "[hook] npm test: ${pass}/${pass} pass — thay đổi trong src/ hoặc test/ không làm vỡ test nào."
 else
-    echo "[hook] npm test: ${pass} pass, ${fail} FAIL. Test đỏ sau thay đổi trong src/:"
+    echo "[hook] npm test: ${pass} pass, ${fail} FAIL. Test đỏ sau thay đổi:"
     printf '%s\n' "$out" | grep -E '^not ok ' | sed 's/^/  /'
     echo "[hook] Sửa cho xanh lại, hoặc nói rõ vì sao thay đổi hành vi là có chủ ý."
 fi

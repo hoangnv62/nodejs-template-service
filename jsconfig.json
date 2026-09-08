@@ -5,6 +5,6 @@
     "target": "esnext",
     "checkJs": true
   },
-  "include": ["src/**/*.js", "app.js"],
+  "include": ["src/**/*.js", "test/**/*.js", "app.js"],
   "exclude": ["node_modules"]
 }

@@ -56,7 +56,9 @@ route → middleware (validate, authenticate) → controller → service → rep
 - Biến môi trường chỉ đọc qua `env` trong `#config/env.js`, không `process.env` rải rác
 - **Cấu trúc DB: dump DDL đầy đủ ở `db/schema.sql`**, quy ước ở `.claude/rules/db-schema.md`.
   Đọc `db/schema.sql` trước khi viết SQL — đừng suy ra cấu trúc bảng từ query có sẵn
-- Test nằm cạnh source: `foo.js` → `foo.test.js`. `node --test` tự tìm theo pattern `*.test.js`
+- Test nằm trong `test/` (cùng cấp với `src/`), **không** nằm cạnh source. Cấu trúc mirror
+  `src/`: `src/utils/response.utils.js` → `test/utils/response.utils.test.js`.
+  `node --test` tự tìm, không cần khai pattern. Test import qua `#alias` như code thường
 - Test không được phụ thuộc DB hay biến môi trường — inject fake `req`/`res`/`next` thay vì chạy server
 
 ## Khi thiếu thông tin

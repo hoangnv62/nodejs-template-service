@@ -14,8 +14,9 @@ Tài liệu gốc: https://code.claude.com/docs/en/claude-directory
 |---|---|---|
 | `settings.json` | luôn luôn, **cưỡng chế** | permission: lệnh nào chạy được, file nào cấm đọc |
 | `settings.local.json` | luôn luôn, chỉ máy bạn | override cá nhân, đã gitignore |
-| `hooks/run-tests.sh` | tự động khi Claude kết thúc lượt | chạy `npm test` nếu `src/` có thay đổi chưa commit |
+| `hooks/run-tests.sh` | tự động khi Claude kết thúc lượt | chạy `npm test` nếu `src/` hoặc `test/` có thay đổi chưa commit |
 | `hooks/validate-claude-config.sh` | tự động sau mỗi Edit/Write | chặn YAML frontmatter sai trong `.claude/` |
+| `hooks/auto-review.sh` | tự động sau mỗi Edit/Write | soát vi phạm quy ước cơ học trong `src/**/*.js` |
 | `rules/architecture.md` | mọi session | trách nhiệm từng lớp, luồng request |
 | `rules/api-conventions.md` | khi mở `routes/`, `controllers/`, `validations/`, `app.js` | response helper, thứ tự middleware |
 | `rules/database.md` | khi mở `repositories/`, `config/database.js` | `$(name)`, chọn method pg-promise |
@@ -94,13 +95,36 @@ Hook **phải** khai trong `settings.json`; `.claude/hooks/` chỉ chứa **scri
 Dùng `${CLAUDE_PROJECT_DIR}` để script tìm được bất kể cwd. Ưu tiên **exec form**
 (`command` + `args`) khi đường dẫn có placeholder.
 
+### `auto-review.sh` — soát quy ước ngay lúc file vừa ghi
+
+Chạy trên `PostToolUse` matcher `Edit|Write`, chỉ xét `src/**/*.js`. Bắt các vi phạm
+**cơ học** của kiến trúc phân lớp, suy lớp từ đường dẫn file:
+
+| Phạm vi | Soát |
+|---|---|
+| mọi file `src/` | import `../` ra ngoài thư mục, import thiếu `.js`, `process.env` ngoài `#config/env.js`, `throw new Error()` trần, status code hardcode, tên file lệch `<domain>.<layer>.js` |
+| `controllers/` | `res.status()`, `try/catch`, truy cập `db.*` |
+| `services/` | `req.`, `res.status/json/send`, `db.*`, SQL literal |
+| `repositories/` | nối chuỗi `${...}` vào SQL, throw lỗi HTTP khác NotFound |
+| `routes/` | handler chưa bọc `asyncHandler`, thiếu `export default router` |
+
+Thêm vào đó: `*.test.js` nằm trong `src/` bị báo đặt sai chỗ (quy ước là `test/`).
+
+**Đây không phải review ngữ nghĩa.** Lỗi logic — thiếu `await`, `db.one` chỗ có thể 0
+dòng, edge case — cần agent `code-reviewer`, phải gọi tay:
+`dùng code-reviewer review src/services/foo.service.js`.
+
+Dùng `stderr` + exit 2 giống `validate-claude-config.sh`: với `PostToolUse`, exit 0 thì
+stdout chỉ vào debug log, Claude không thấy. Tool đã chạy rồi nên exit 2 ở đây không chặn
+được gì — chỉ để báo.
+
 ### `run-tests.sh` — mạng an toàn cho refactor
 
 Chạy trên event `Stop`, tức sau khi Claude kết thúc một lượt. Đây là câu trả lời cho
 "làm sao chắc chắn refactor không đổi hành vi": Claude Code chạy nó **bất kể Claude
 quyết định gì**, nên không phụ thuộc việc Claude có tự nhớ chạy test hay không.
 
-- Bỏ qua nếu `git status` cho thấy `src/` và `package.json` không có thay đổi chưa commit
+- Bỏ qua nếu `git status` cho thấy `src/`, `test/` và `package.json` không có thay đổi chưa commit
   → không chạy test mỗi lượt hỏi đáp thông thường
 - Test xanh: in `[hook] npm test: 25/25 pass`
 - Test đỏ: liệt kê từng dòng `not ok` để Claude sửa tiếp
